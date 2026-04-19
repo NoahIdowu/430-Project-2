@@ -3,91 +3,86 @@ const React = require('react');
 const { useState, useEffect } = React;
 const { createRoot } = require('react-dom/client');
 
-const handleDomo = (e, onDomoAdded) => {
+const handleNote = (e, onNoteAdded) => {
     e.preventDefault();
     helper.hideError();
 
-    const name = e.target.querySelector('#domoName').value;
-    const age = e.target.querySelector('#domoAge').value;
-    const level = e.target.querySelector('#domoLevel').value;
+    const title = e.target.querySelector('#noteTitle').value;
+    const content = e.target.querySelector('#noteContent').value;
 
-    if (!name || !age || !level) {
-        helper.handleError('All fields are required!');
+    if (!title || !content) {
+        helper.handleError('Both title and content are required!');
         return false;
     }
 
-    helper.sendPost(e.target.action, { name, age, level }, onDomoAdded);
+    helper.sendPost(e.target.action, { title, content }, onNoteAdded);
     return false;
 }
 
-const DomoForm = (props) => {
+const NoteForm = (props) => {
     return (
-        <form id="domoForm"
-            onSubmit={(e) => handleDomo(e, props.triggerReload)}
-            name='domoForm'
+        <form id="noteForm"
+            onSubmit={(e) => handleNote(e, props.triggerReload)}
+            name='noteForm'
             action='/maker'
             method='POST'
-            className='domoForm'
+            className='noteForm'
         >
-            <label htmlFor='name'>Name: </label>
-            <input id='domoName' type='text' name='name' placeholder='Domo Name' />
-            <label htmlFor='age'>Age: </label>
-            <input id='domoAge' type='number' min='0' name='age' />
-            <label htmlFor='level'>Level: </label>
-            <input id='domoLevel' type='number' min='1' name='level' />
-            <input className='makeDomoSubmit' type='submit' value='Make Domo' />
+            <label htmlFor='title'>Title: </label>
+            <input id='noteTitle' type='text' name='title' placeholder='Note Title' />
+            <label htmlFor='content'>Content: </label>
+            <textarea id='noteContent' name='content' placeholder='Write your note here...'></textarea>
+            <input className='makeNoteSubmit' type='submit' value='Save Note' />
         </form>
     );
 }
 
-const DomoList = (props) => {
-    const [domos, setDomos] = useState(props.domos);
+const NoteList = (props) => {
+    const [notes, setNotes] = useState(props.notes);
 
     useEffect(() => {
-        const loadDomosFromServer = async () => {
-            const response = await fetch('/getDomos');
+        const loadNotesFromServer = async () => {
+            const response = await fetch('/getNotes');
             const data = await response.json();
-            setDomos(data.domos);
+            setNotes(data.notes);
         };
-        loadDomosFromServer();
-    }, [props.reloadDomos]);
+        loadNotesFromServer();
+    }, [props.reloadNotes]);
 
-    if (domos.length === 0) {
+    if (notes.length === 0) {
         return (
-            <div className='domoList'>
-                <h3 className='emptyDomo'>No Domos yet!</h3>
+            <div className='noteList'>
+                <h3 className='emptyNote'>No notes found!</h3>
             </div>
         );
     }
 
-    const domoNodes = domos.map(domo => {
+    const noteNodes = notes.map(note => {
         return (
-            <div key={domo._id} className='domo'>
-                <img src="/assets/img/domoface.jpeg" alt="domo face" className="domoFace" />
-                <h3 className='domoName'>Name: {domo.name}</h3>
-                <h3 className='domoAge'>Age: {domo.age}</h3>
-                <h3 className='domoLevel'>Level: {domo.level}</h3>
+            <div key={note._id} className='note'>
+                <h3 className='noteTitle'>{note.title}</h3>
+                <p className='noteContent'>{note.content}</p>
             </div>
         );
     });
 
     return (
-        <div className='domoList'>
-            {domoNodes}
+        <div className='noteList'>
+            {noteNodes}
         </div>
     );
 }
 
 const App = () => {
-    const [reloadDomos, setReloadDomos] = useState(false);
+    const [reloadNotes, setReloadNotes] = useState(false);
 
     return (
         <div>
-            <div id='makeDomo'>
-                <DomoForm triggerReload={() => setReloadDomos(!reloadDomos)} />
+            <div id='makeNote'>
+                <NoteForm triggerReload={() => setReloadNotes(!reloadNotes)} />
             </div>
-            <div id='domos'>
-                <DomoList domos={[]} reloadDomos={reloadDomos} />
+            <div id='notes'>
+                <NoteList notes={[]} reloadNotes={reloadNotes} />
             </div>
         </div>
     );
@@ -96,7 +91,6 @@ const App = () => {
 const init = () => {
     const root = createRoot(document.getElementById('app'));
     root.render(<App />);
-
 };
 
 window.onload = init;
