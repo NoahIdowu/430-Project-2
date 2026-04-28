@@ -44,7 +44,7 @@ app.use(session({
     // keys. This makes it so your unique session keys are different from other servers
     // using express. The secret can be changed to anything you want, but will invalidate
     // existing session ids (which isn’t necessarily a huge issue)
-    secret: 'Domo Arigato',
+    secret: 'Note Maker Pro Secret',
     // The resave option set to false tells the session library to only send the session key
     // back to the database if it changes. If it were set to true, we would generate a lot of
     // database requests that were unnecessary.

@@ -152,7 +152,7 @@ nav:nth-child(1) {
     display: none;
 }
 
-#domoMessage {
+#noteMessage {
     top: 250px;
     width: 250px;
     height: 650px;
@@ -162,7 +162,7 @@ nav:nth-child(1) {
     overflow: hidden;
 }
 
-#domoMessage h3 {
+#noteMessage h3 {
     width: 200px;
     position: absolute;
     top: 0px;
